@@ -2,6 +2,7 @@ import iconGoogle from "../assets/icon-google.svg.webp";
 import { useRef, useState } from "react";
 import api from "../../services/api";
 import { Link, useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 
 export default function SignUp() {
   const nameRef = useRef();
@@ -31,13 +32,13 @@ export default function SignUp() {
         name: nameRef.current.value,
         email: emailRef.current.value,
         password: passwordRef.current.value,
-        confirmPassword: confirmPasswordRef.current.value,
       });
-      alert("Usuário Cadastrado com Sucesso!");
+
+      toast.success("Usuário Cadastrado com Sucesso!");
 
       navigate("/login");
     } catch (err) {
-      alert("Erro ao Cadastrar Usuário");
+      toast.error("Erro ao Cadastrar Usuário");
     }
   }
 

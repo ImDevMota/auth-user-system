@@ -7,14 +7,19 @@ export default function ListUsers() {
   useEffect(() => {
     async function loadUsers() {
       const token = localStorage.getItem("token");
-      const {
-        data: { users },
-      } = await api.get("/list-users", {
-        headers: { Authorization: `Bearer ${token}` },
-        // headers.authorization
-      });
 
-      setAllUsers(users);
+      try {
+        const {
+          data: { users },
+        } = await api.get("/list-users", {
+          headers: { Authorization: `Bearer ${token}` },
+          // headers.authorization
+        });
+
+        setAllUsers(users);
+      } catch (error) {
+        alert("Erro na requisição da lista de usuários.");
+      }
     }
 
     loadUsers();

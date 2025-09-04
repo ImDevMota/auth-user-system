@@ -2,6 +2,7 @@ import iconGoogle from "../assets/icon-google.svg.webp";
 import { useRef, useState } from "react";
 import api from "../../services/api";
 import { Link, useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 
 export default function Login() {
   const emailRef = useRef();
@@ -23,11 +24,11 @@ export default function Login() {
       });
 
       localStorage.setItem("token", token);
-      alert("Login realizado com Sucesso!");
+      toast.success("Login realizado com sucesso!");
 
       navigate("/list-users");
     } catch (err) {
-      alert("Senha ou E-mail Incorretos");
+      toast.error("Senha ou E-mail Incorretos");
       setError("E-mail ou Senha incorretos");
       return;
     }
