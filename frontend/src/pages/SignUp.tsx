@@ -1,26 +1,36 @@
 import iconGoogle from "../assets/icon-google.svg.webp";
-import { useRef, useState } from "react";
+import React, { useRef, useState } from "react";
 import api from "../../services/api";
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 
+interface RegisterFormData {
+  username: string;
+  email: string;
+  password: string;
+  confirmPassword: string;
+}
+
 export default function SignUp() {
-  const nameRef = useRef();
-  const emailRef = useRef();
-  const passwordRef = useRef();
-  const confirmPasswordRef = useRef();
+  const [formData, setFormData] = useState<RegisterFormData>({
+    username: "",
+    email: "",
+    password: "",
+    confirmPassword: "",
+  });
   const navigate = useNavigate();
 
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-  const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
   const [error, setError] = useState("");
 
-  async function handleSubmit(event) {
+  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) =>
+    setFormData({ ...formData, [event.target.name]: event.target.value });
+
+  const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
 
-    if (password !== confirmPassword) {
+    if (formData.password !== formData.confirmPassword) {
       setError("As senhas não coincidem");
       return;
     }
@@ -29,9 +39,9 @@ export default function SignUp() {
 
     try {
       await api.post("/cadastro", {
-        name: nameRef.current.value,
-        email: emailRef.current.value,
-        password: passwordRef.current.value,
+        name: formData.username,
+        email: formData.email,
+        password: formData.password,
       });
 
       toast.success("Usuário Cadastrado com Sucesso!");
@@ -40,7 +50,7 @@ export default function SignUp() {
     } catch (err) {
       toast.error("Erro ao Cadastrar Usuário");
     }
-  }
+  };
 
   return (
     <section className="flex items-center w-screen h-screen justify-center bg-gray-100 font-poppins">
@@ -55,7 +65,7 @@ export default function SignUp() {
             <input
               type="text"
               name="inputName"
-              ref={nameRef}
+              onChange={handleChange}
               className="border-[2px] peer border-gray-300 rounded-[4px] px-[0.8rem] h-[2.7rem] py-[0.4rem] w-full focus:outline-none focus:border-blue-500"
               placeholder="Name"
               id="inputName"
@@ -74,7 +84,7 @@ export default function SignUp() {
             <input
               type="email"
               name="inputEmail"
-              ref={emailRef}
+              onChange={handleChange}
               className="border-[2px] peer border-gray-300 rounded-[4px] px-[0.8rem] py-[0.4rem] h-[2.7rem] w-full focus:outline-none focus:border-blue-500"
               placeholder="E-mail"
               id="inputEmail"
@@ -93,8 +103,7 @@ export default function SignUp() {
             <input
               type={showPassword ? "text" : "password"}
               name="inputPassword"
-              ref={passwordRef}
-              onChange={(e) => setPassword(e.target.value)}
+              onChange={handleChange}
               className="border-[2px] peer border-gray-300 rounded-[4px] px-[0.8rem] py-[0.4rem] h-[2.7rem] w-full focus:outline-none focus:border-blue-500"
               placeholder="Password"
               id="inputPassword"
@@ -162,8 +171,7 @@ export default function SignUp() {
             <input
               type={showConfirmPassword ? "text" : "password"}
               name="inputConfirmPassword"
-              ref={confirmPasswordRef}
-              onChange={(e) => setConfirmPassword(e.target.value)}
+              onChange={handleChange}
               className="border-[2px] peer border-gray-300 rounded-[4px] px-[0.8rem] py-[0.4rem] h-[2.7rem] w-full focus:outline-none focus:border-blue-500"
               placeholder="Confirm Password"
               id="inputConfirmPassword"
@@ -243,11 +251,7 @@ export default function SignUp() {
 
         <p className="text-[12px] font-[400] mt-[0.7rem] tracking-[0.75px] text-[black]/50">
           Already have an account?{" "}
-          <Link
-            to={"/login"}
-            href="#"
-            className="text-blue-500 hover:underline"
-          >
+          <Link to={"/login"} className="text-blue-500 hover:underline">
             Log In
           </Link>
         </p>
