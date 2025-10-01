@@ -4,23 +4,33 @@ import api from "../../services/api";
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 
+interface LoginFormData {
+  email: string;
+  password: string;
+}
+
 export default function Login() {
-  const emailRef = useRef();
-  const passwordRef = useRef();
+  const [formData, setFormData] = useState<LoginFormData>({
+    email: "",
+    password: "",
+  });
   const navigate = useNavigate();
 
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState("");
 
-  async function handleSubmit(event) {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) =>
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+
+  const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
 
     setError("");
 
     try {
       const { data: token } = await api.post("/login", {
-        email: emailRef.current.value,
-        password: passwordRef.current.value,
+        email: formData.email,
+        password: formData.password,
       });
 
       localStorage.setItem("token", token);
@@ -32,7 +42,7 @@ export default function Login() {
       setError("E-mail ou Senha incorretos");
       return;
     }
-  }
+  };
 
   return (
     <section className="flex items-center w-screen h-screen justify-center bg-gray-100 font-poppins">
@@ -47,7 +57,7 @@ export default function Login() {
             <input
               type="email"
               name="inputEmail"
-              ref={emailRef}
+              onChange={handleChange}
               className="border-[2px] peer border-gray-300 rounded-[4px] px-[0.8rem] py-[0.4rem] h-[2.7rem] w-full focus:outline-none focus:border-blue-500"
               placeholder="E-mail"
               id="inputEmail"
@@ -66,7 +76,7 @@ export default function Login() {
             <input
               type={showPassword ? "text" : "password"}
               name="inputPassword"
-              ref={passwordRef}
+              onChange={handleChange}
               className="border-[2px] peer border-gray-300 rounded-[4px] px-[0.8rem] py-[0.4rem] h-[2.7rem] w-full focus:outline-none focus:border-blue-500"
               placeholder="Password"
               id="inputPassword"
@@ -146,7 +156,7 @@ export default function Login() {
 
         <p className="text-[12px] font-[400] mt-[0.7rem] tracking-[0.75px] text-[black]/50">
           New User?{" "}
-          <Link to={"/"} href="#" className="text-blue-500 hover:underline">
+          <Link to={"/"} className="text-blue-500 hover:underline">
             Sign up
           </Link>
         </p>

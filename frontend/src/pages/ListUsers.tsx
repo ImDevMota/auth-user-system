@@ -1,8 +1,14 @@
 import api from "../../services/api";
 import { useEffect, useState } from "react";
 
+interface User {
+  id: string | number;
+  username: string;
+  email: string;
+}
+
 export default function ListUsers() {
-  const [allUsers, setAllUsers] = useState();
+  const [allUsers, setAllUsers] = useState<User[]>([]);
 
   useEffect(() => {
     async function loadUsers() {
@@ -34,7 +40,7 @@ export default function ListUsers() {
           allUsers.map((user) => (
             <li key={user.id}>
               <p>{user.id}</p>
-              <p>{user.name}</p>
+              <p>{user.username}</p>
               <p>{user.email}</p>
             </li>
           ))}
